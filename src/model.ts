@@ -1,18 +1,18 @@
-type StudentID = string
-type Integer = number
-type Decimal = number
-type PrimaryKey = number
-type Point = number
+export type StudentID = string
+export type Integer = number
+export type Decimal = number
+export type PrimaryKey = number
+export type Point = number
 
-interface Student {
+export interface Student {
   key: PrimaryKey
-  studentId: StudentID
+  studentID: StudentID
   name: string
   isPoorStudent: boolean
   currentPoint: Point
 }
 
-interface PointChangeRecord {
+export interface PointChangeRecord {
   key: PrimaryKey
   subject: PrimaryKey
   operator: PrimaryKey
@@ -21,7 +21,7 @@ interface PointChangeRecord {
   timestamp: Date
 }
 
-interface TranscationRecord {
+export interface TranscationRecord {
   key: PrimaryKey
   subject: PrimaryKey
   operator: PrimaryKey
@@ -32,7 +32,7 @@ interface TranscationRecord {
   originalPrice: Point
 }
 
-interface Item {
+export interface Item {
   key: PrimaryKey
   creator: PrimaryKey
   name: string
@@ -43,14 +43,14 @@ interface Item {
   creationTime: Date
 }
 
-interface DonationRecord {
+export interface DonationRecord {
   key: PrimaryKey
   donator: PrimaryKey
   content: string
   timestamp: Date
 }
 
-interface RentalRecord {
+export interface RentalRecord {
   key: PrimaryKey
   borrower: PrimaryKey
   operator: PrimaryKey
@@ -59,7 +59,7 @@ interface RentalRecord {
   startTime: Date
 }
 
-interface GiftRecord {
+export interface GiftRecord {
   key: PrimaryKey
   receiver: PrimaryKey
   operator: PrimaryKey
