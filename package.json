@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SIT-Mercy/database.git"
@@ -17,5 +16,8 @@
   "homepage": "https://github.com/SIT-Mercy/database#readme",
   "dependencies": {
     "postgres": "^3.3.3"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5"
   }
 }
