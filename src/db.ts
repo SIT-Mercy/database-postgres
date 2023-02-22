@@ -12,88 +12,109 @@ export const sql = postgres({
   password: '',            // Password of database user
 })
 
+const tables = {
+  staff: "staff",
+  student: "student",
+  pointChange: "point_change",
+  item: "item",
+  donation: "donation",
+  rental: "rental"
+}
+
 export function initDatabase(sql: postgres.Sql<{}>) {
-  initAuthorization(sql)
+  initStaff(sql)
   initStudens(sql)
   initPointChanges(sql)
   initItems(sql)
-  initDonationRecords(sql)
-  initRentalRecords(sql)
+  initDonation(sql)
+  initRental(sql)
 }
-
-function initAuthorization(sql: postgres.Sql<{}>) {
+/**
+ * table: {@link tables.staff}
+ */
+function initStaff(sql: postgres.Sql<{}>) {
   sql`
-  CREATE TABLE [IF NOT EXISTS] Authorization (
-    id serial PRIMARY KEY,
-    studentID VARCHAR ( 20 ) UNIQUE NOT NULL,
-    password VARCHAR ( 20 ) NOT NULL,
-    creationTime TIMESTAMP NOT NULL,
-    lastLogin TIMESTAMP
+  CREATE TABLE [IF NOT EXISTS] staff (
+    id SERIAL PRIMARY KEY,
+    oa_id VARCHAR(20) UNIQUE NOT NULL,
+    password VARCHAR(20) NOT NULL,
+    creation_time TIMESTAMP NOT NULL,
+    phone_number VARCHAR(32) NOT NULL,
+    last_login TIMESTAMP
   );
   `
 }
-
+/**
+ * table: {@link tables.student}
+ */
 function initStudens(sql: postgres.Sql<{}>) {
   sql`
-  CREATE TABLE [IF NOT EXISTS] Students (
-    id serial PRIMARY KEY,
-    studentID VARCHAR ( 20 ) UNIQUE NOT NULL,
-    name VARCHAR ( 20 ) NOT NULL,
-    point INTEGER NOT NULL,
+  CREATE TABLE [IF NOT EXISTS] student (
+    id SERIAL PRIMARY KEY,
+    //??? student_id 
+    name VARCHAR(20) NOT NULL,
+    point INT NOT NULL,
+    phone_number VARCHAR(32) NOT NULL,
     //??? isPoor BOOLEAN NOT NULL
   );
   `
 }
-
+/**
+ * table: {@link tables.pointChange}
+ */
 function initPointChanges(sql: postgres.Sql<{}>) {
   sql`
-  CREATE TABLE [IF NOT EXISTS] PointChanges (
-    id serial PRIMARY KEY,
-    subject VARCHAR ( 20 ) NOT NULL,
-    operator VARCHAR ( 20 ) NOT NULL,
-    pointBefore INTEGER NOT NULL,
-    pointAfter INTEGER NOT NULL,
-    creationTime TIMESTAMP NOT NULL
+  CREATE TABLE [IF NOT EXISTS] poing_change (
+    id SERIAL PRIMARY KEY,
+    subject_id INT NOT NULL,
+    operator_id INT NOT NULL,
+    point_before INT NOT NULL,
+    point_after INT NOT NULL,
+    creation_time TIMESTAMP NOT NULL
   );
   `
 }
 
 function initItems(sql: postgres.Sql<{}>) {
   sql`
-  CREATE TABLE [IF NOT EXISTS] Items (
-    id serial PRIMARY KEY,
-    name VARCHAR ( 20 ) NOT NULL,
-    description VARCHAR ( 512 ) NOT NULL,
-    //??? imageURL VARCHAR NOT NULL,
-    price INTEGER NOT NULL,
-    creationTime TIMESTAMP NOT NULL
+  CREATE TABLE [IF NOT EXISTS] item (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    description TEXT NOT NULL,
+    image_path VARCHAR NOT NULL,
+    price INT NOT NULL,
+    creation_time TIMESTAMP NOT NULL
+  );
+  `
+}
+/**
+ * table: {@link tables.donation}
+ */
+function initDonation(sql: postgres.Sql<{}>) {
+  sql`
+  CREATE TABLE [IF NOT EXISTS] donation (
+    id SERIAL PRIMARY KEY,
+    note TEXT NOT NULL,
+    operator_id INT NOT NULL,
+    count INT NOT NULL,
+    creation_time TIMESTAMP NOT NULL
   );
   `
 }
 
-function initDonationRecords(sql: postgres.Sql<{}>) {
+/**
+ * table: {@link tables.rental}
+ */
+function initRental(sql: postgres.Sql<{}>) {
   sql`
-  CREATE TABLE [IF NOT EXISTS] DonationRecords (
-    id serial PRIMARY KEY,
-    name VARCHAR ( 20 ) NOT NULL,
-    description VARCHAR ( 512 ) NOT NULL,
-    //??? imageURL VARCHAR NOT NULL,
-    price INTEGER NOT NULL,
-    creationTime TIMESTAMP NOT NULL
-  );
-  `
-}
-
-function initRentalRecords(sql: postgres.Sql<{}>){
-  sql`
-  CREATE TABLE [IF NOT EXISTS] RentalRecords (
-    id serial PRIMARY KEY,
-    name VARCHAR ( 20 ) NOT NULL,
-    phoneNumber VARCHAR ( 32 ) NOT NULL,
-    //??? KEY? borrower INTEGER NOT NULL,
-    //??? KEY? operator INTEGER NOT NULL,
+  CREATE TABLE [IF NOT EXISTS] rental (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(20) NOT NULL,
+    phone_number VARCHAR(32) NOT NULL,
+    borrower_id INT NOT NULL,
+    operator_id INT NOT NULL,
     deadline TIMESTAMP NOT NULL,
-    creationTime TIMESTAMP NOT NULL
+    creation_time TIMESTAMP NOT NULL
   );
   `
 }
