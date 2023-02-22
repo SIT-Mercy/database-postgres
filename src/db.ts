@@ -43,6 +43,7 @@ function initStaff(sql: postgres.Sql<{}>) {
     student_id INT NOT NULL,
     password VARCHAR(20) NOT NULL,
     creation_time TIMESTAMP NOT NULL,
+    type VARCHAR NOT NULL,
     last_login TIMESTAMP,
     FOREIGN KEY (subject_id)
       REFERENCES students(id),
@@ -111,7 +112,7 @@ function initTransactions(sql: postgres.Sql<{}>) {
   sql`
   CREATE TABLE [IF NOT EXISTS] donations (
     id SERIAL PRIMARY KEY,
-    note TEXT NOT NULL,
+    note TEXT,
     item_id INT NOT NULL,
     customer_id INT NOT NULL,
     operator_id INT NOT NULL,
