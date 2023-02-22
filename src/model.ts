@@ -1,6 +1,5 @@
 export type Integer = number
 export type Amount = number
-export type Decimal = number
 export type PrimaryKey = number
 export type Point = number
 
@@ -38,10 +37,10 @@ export interface Student {
 }
 
 enum PointChangeReason {
-  redeem,
-  rental,
-  yearlyCost,
-  volunteer
+  redeem = "redeem",
+  rental = "rental",
+  yearlyCost = "yearlyCost",
+  volunteer = "volunterer"
 }
 
 export interface PointChangeRecord {
@@ -63,7 +62,7 @@ export interface TranscationRecord {
   itemKey: PrimaryKey
   amount: Integer
   originalPrice: Point
-  finalPrice: Decimal
+  finalPrice: Point
   note: String | null
   creationTime: Date
   get item(): Promise<Item>

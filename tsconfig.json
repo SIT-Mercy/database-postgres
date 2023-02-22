@@ -6,10 +6,8 @@
     "sourceMap": true,
     "target": "ES2017",
     "outDir": "dist",
+    "skipLibCheck": true,
     "allowJs": true,
-    "types": [
-      "node"
-    ],
     "module": "ES2022",
     "moduleResolution": "node",
     "esModuleInterop": true,
