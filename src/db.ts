@@ -89,11 +89,14 @@ function initPointChanges(sql: postgres.Sql<{}>) {
   `
 }
 
+/**
+ * table: {@link tables.items}
+ */
 function initItems(sql: postgres.Sql<{}>) {
   sql`
   CREATE TABLE [IF NOT EXISTS] items (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(20) NOT NULL,
+    name VARCHAR(32) NOT NULL,
     description TEXT NOT NULL,
     price INT NOT NULL,
     rent INT NOT NULL,
