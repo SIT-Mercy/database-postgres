@@ -1,6 +1,8 @@
 import postgres from "postgres"
 import { initDatabase } from "./db.js"
+import { install as installSourceMap } from "source-map-support"
 
+installSourceMap()
 // temporarily for development
 const sql = postgres({
   host: "localhost",

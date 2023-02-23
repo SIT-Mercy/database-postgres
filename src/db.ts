@@ -37,7 +37,7 @@ async function initStudents(sql: postgres.Sql<any>): Promise<void> {
     phone_number VARCHAR(32),
     poor_level SMALLINT NOT NULL,
     creation_time TIMESTAMP NOT NULL,
-    college VARCHAR NOT NULL,
+    college VARCHAR NOT NULL
   );
   `
 }
@@ -88,7 +88,7 @@ async function initItems(sql: postgres.Sql<any>): Promise<void> {
     id SERIAL PRIMARY KEY,
     name VARCHAR(32) NOT NULL,
     description TEXT NOT NULL,
-    not TEXT,
+    notes TEXT,
     price INT,
     rent INT,
     poor_factor DECIMAL NOT NULL,
@@ -102,9 +102,9 @@ async function initItems(sql: postgres.Sql<any>): Promise<void> {
  */
 async function initTransactions(sql: postgres.Sql<any>): Promise<void> {
   await sql`
-  CREATE TABLE IF NOT EXISTS donations (
+  CREATE TABLE IF NOT EXISTS transactions (
     id SERIAL PRIMARY KEY,
-    note TEXT,
+    notes TEXT,
     item_id INT NOT NULL,
     customer_id INT NOT NULL,
     operator_id INT NOT NULL,
@@ -149,7 +149,7 @@ async function initDonations(sql: postgres.Sql<any>): Promise<void> {
   await sql`
   CREATE TABLE IF NOT EXISTS donations (
     id SERIAL PRIMARY KEY,
-    note TEXT NOT NULL,
+    notes TEXT NOT NULL,
     donator_id INT NOT NULL,
     operator_id INT NOT NULL,
     creation_time TIMESTAMP NOT NULL,

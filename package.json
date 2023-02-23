@@ -16,9 +16,11 @@
   },
   "homepage": "https://github.com/SIT-Mercy/database#readme",
   "dependencies": {
-    "postgres": "^3.3.3"
+    "postgres": "^3.3.3",
+    "source-map-support": "^0.5.21"
   },
   "devDependencies": {
+    "@types/source-map-support": "^0.5.6",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "eslint": "^8.34.0",
     "eslint-config-standard-with-typescript": "^34.0.0",
