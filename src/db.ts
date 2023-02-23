@@ -35,8 +35,9 @@ async function initStudents(sql: postgres.Sql<any>): Promise<void> {
     name VARCHAR(20) NOT NULL,
     point INT NOT NULL,
     phone_number VARCHAR(32),
-    is_poor BOOLEAN NOT NULL,
-    creation_time TIMESTAMP NOT NULL
+    poor_level SMALLINT NOT NULL,
+    creation_time TIMESTAMP NOT NULL,
+    college VARCHAR NOT NULL,
   );
   `
 }
@@ -87,11 +88,10 @@ async function initItems(sql: postgres.Sql<any>): Promise<void> {
     id SERIAL PRIMARY KEY,
     name VARCHAR(32) NOT NULL,
     description TEXT NOT NULL,
-    price INT NOT NULL,
-    rent INT NOT NULL,
-    poor_discount BOOLEAN NOT NULL,
-    for_sale BOOLEAN NOT NULL,
-    rentable BOOLEAN NOT NULL,
+    not TEXT,
+    price INT,
+    rent INT,
+    poor_factor DECIMAL NOT NULL,
     creation_time TIMESTAMP NOT NULL
   );
   `
@@ -109,7 +109,8 @@ async function initTransactions(sql: postgres.Sql<any>): Promise<void> {
     customer_id INT NOT NULL,
     operator_id INT NOT NULL,
     amount INT NOT NULL,
-    original_price INT NOT NULL,
+    unit_price INT NOT NULL,
+    price_fator DECIMAL NOT NULL,
     final_price INT NOT NULL,
     creation_time TIMESTAMP NOT NULL,
     FOREIGN KEY (item_id)
@@ -173,6 +174,7 @@ async function initRental(sql: postgres.Sql<any>): Promise<void> {
     operator_id INT NOT NULL,
     deadline TIMESTAMP NOT NULL,
     creation_time TIMESTAMP NOT NULL,
+    renewal JSON,
     return_time TIMESTAMP,
     FOREIGN KEY (borrower_id)
       REFERENCES students(id),
