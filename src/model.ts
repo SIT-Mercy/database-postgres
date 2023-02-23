@@ -14,9 +14,9 @@ export enum PoorLevel {
 }
 
 export interface Student {
-  key: PrimaryKey
   studentID: string
   name: string
+  college: string
   poorLevel: PoorLevel
   currentPoint: Point
   creationTime: Date
@@ -27,7 +27,7 @@ export interface Student {
 }
 
 export interface StudentEntity extends Student, DbEntity {
-  get student(): Promise<Student>
+  key: PrimaryKey
 }
 
 export enum StaffAuthority {
@@ -35,7 +35,6 @@ export enum StaffAuthority {
   admin = "admin",
 }
 export interface Staff {
-  key: PrimaryKey
   /**
    * Just check the equality, becasue the password could be encrypted.
    */
@@ -50,6 +49,7 @@ export interface Staff {
 }
 
 export interface StaffEntity extends Staff, DbEntity {
+  key: PrimaryKey
   get student(): Promise<Student>
 }
 
@@ -61,7 +61,6 @@ enum PointChangeReason {
 }
 
 export interface PointChangeRecord {
-  key: PrimaryKey
   subjectKey: PrimaryKey
   operatorKey: PrimaryKey
   beforeChange: Point
@@ -71,12 +70,12 @@ export interface PointChangeRecord {
 }
 
 export interface PointChangeRecordEntity extends PointChangeRecord, DbEntity {
+  key: PrimaryKey
   get subject(): Promise<Student>
   get operator(): Promise<Staff>
 }
 
 export interface TranscationRecord {
-  key: PrimaryKey
   customerKey: PrimaryKey
   operatorKey: PrimaryKey
   itemKey: PrimaryKey
@@ -89,19 +88,23 @@ export interface TranscationRecord {
 }
 
 export interface TranscationRecordEntity extends TranscationRecord, DbEntity {
+  key: PrimaryKey
   get item(): Promise<Item>
   get customer(): Promise<Student>
   get operator(): Promise<Staff>
 }
 
 export interface Item {
-  key: PrimaryKey
   name: string
   description: string
   price: Point | null
   rent: Point | null
   poorPriceFactor: Decimal
   creationTime: Date
+}
+
+export interface ItemEntity extends Item, DbEntity {
+  key: PrimaryKey
 }
 
 enum ItemAmountChangeReason {
@@ -112,7 +115,6 @@ enum ItemAmountChangeReason {
 }
 
 export interface ItemAmountChangeRecord {
-  key: PrimaryKey
   name: string
   itemKey: PrimaryKey
   relatedKey: PrimaryKey | null
@@ -123,11 +125,11 @@ export interface ItemAmountChangeRecord {
 }
 
 export interface ItemAmountChangeRecordEntity extends ItemAmountChangeRecord, DbEntity {
+  key: PrimaryKey
   get item(): Promise<Item>
 }
 
 export interface DonationRecord {
-  key: PrimaryKey
   donatorKey: PrimaryKey
   operatorKey: PrimaryKey
   note: string
@@ -135,6 +137,7 @@ export interface DonationRecord {
 }
 
 export interface DonationRecordEntity extends DonationRecord, DbEntity {
+  key: PrimaryKey
   get donator(): Promise<Student>
   get operator(): Promise<Staff>
 }
@@ -145,7 +148,6 @@ interface RenewalRecord {
 }
 
 export interface RentalRecord {
-  key: PrimaryKey
   borrowerKey: PrimaryKey
   operatorKey: PrimaryKey
   itemKey: PrimaryKey
@@ -158,6 +160,7 @@ export interface RentalRecord {
 }
 
 export interface RentalRecordEntity extends RentalRecord, DbEntity {
+  key: PrimaryKey
   get borrower(): Promise<Student>
   get operator(): Promise<Staff>
   get item(): Promise<Item>

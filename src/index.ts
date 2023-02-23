@@ -1,5 +1,5 @@
 import postgres from "postgres"
-import { initDatabase } from "./db.js"
+import * as db from "./db.js"
 import { install as installSourceMap } from "source-map-support"
 
 installSourceMap()
@@ -17,6 +17,21 @@ SELECT version();
 
 console.log(version)
 
-await initDatabase(sql)
-
+async function tryInitDatabase(): Promise<void> {
+  await db.initDatabase(sql)
+}
+async function tryAddTestStudent(): Promise<void> {
+  const id = await db.addStudent(sql, {
+    studentID: "2210XY0AAA",
+    name: "Tom",
+    college: "Computer",
+    poorLevel: 0,
+    currentPoint: 0,
+    creationTime: new Date(),
+    phoneNumber: "123456789"
+  })
+  console.log(id)
+}
+await tryInitDatabase()
+await tryAddTestStudent()
 await sql.end()

@@ -1,4 +1,5 @@
 import type postgres from "postgres"
+import type * as model from "./model.js"
 
 const tables = {
   staff: "staff",
@@ -33,14 +34,42 @@ async function initStudents(sql: postgres.Sql<any>): Promise<void> {
     id SERIAL PRIMARY KEY,
     student_id VARCHAR(20) UNIQUE NOT NULL,
     name VARCHAR(20) NOT NULL,
+    college VARCHAR NOT NULL,
     point INT NOT NULL,
-    phone_number VARCHAR(32),
     poor_level SMALLINT NOT NULL,
-    creation_time TIMESTAMP NOT NULL,
-    college VARCHAR NOT NULL
+    phone_number VARCHAR(32),
+    creation_time TIMESTAMP NOT NULL
   );
   `
 }
+
+export async function addStudent(sql: postgres.Sql<any>,
+  student: model.Student
+): Promise<model.PrimaryKey> {
+  const id = sql`
+  INSERT INTO students (
+    student_id,
+    name,
+    college,
+    point,
+    phone_number,
+    poor_level,
+    creation_time
+  )
+  VALUES (
+    ${student.studentID},
+    ${student.name},
+    ${student.college},
+    ${student.currentPoint},
+    ${student.phoneNumber},
+    ${student.poorLevel},
+    ${student.creationTime}
+  )
+  RETURNING id;
+  `
+  return id[0].id
+}
+
 /**
  * table: {@link tables.staff}
  */
@@ -49,10 +78,10 @@ async function initStaff(sql: postgres.Sql<any>): Promise<void> {
   CREATE TABLE IF NOT EXISTS staff (
     id SERIAL PRIMARY KEY,
     student_id INT NOT NULL,
-    password VARCHAR(20) NOT NULL,
-    creation_time TIMESTAMP NOT NULL,
     type VARCHAR NOT NULL,
+    password VARCHAR(20) NOT NULL,
     last_login TIMESTAMP,
+    creation_time TIMESTAMP NOT NULL,
     FOREIGN KEY (student_id)
       REFERENCES students(id)
   );
@@ -66,10 +95,10 @@ async function initPointChanges(sql: postgres.Sql<any>): Promise<void> {
   CREATE TABLE IF NOT EXISTS point_changes (
     id SERIAL PRIMARY KEY,
     subject_id INT NOT NULL,
-    operator_id INT NOT NULL,
+    reason TEXT,
     point_before INT NOT NULL,
     point_after INT NOT NULL,
-    reason TEXT,
+    operator_id INT NOT NULL,
     creation_time TIMESTAMP NOT NULL,
     FOREIGN KEY (subject_id)
       REFERENCES students(id),
@@ -87,11 +116,11 @@ async function initItems(sql: postgres.Sql<any>): Promise<void> {
   CREATE TABLE IF NOT EXISTS items (
     id SERIAL PRIMARY KEY,
     name VARCHAR(32) NOT NULL,
-    description TEXT NOT NULL,
-    notes TEXT,
     price INT,
     rent INT,
     poor_factor DECIMAL NOT NULL,
+    notes TEXT,
+    description TEXT NOT NULL,
     creation_time TIMESTAMP NOT NULL
   );
   `
@@ -104,14 +133,14 @@ async function initTransactions(sql: postgres.Sql<any>): Promise<void> {
   await sql`
   CREATE TABLE IF NOT EXISTS transactions (
     id SERIAL PRIMARY KEY,
-    notes TEXT,
     item_id INT NOT NULL,
     customer_id INT NOT NULL,
-    operator_id INT NOT NULL,
-    amount INT NOT NULL,
     unit_price INT NOT NULL,
+    amount INT NOT NULL,
     price_fator DECIMAL NOT NULL,
     final_price INT NOT NULL,
+    operator_id INT NOT NULL,
+    notes TEXT,
     creation_time TIMESTAMP NOT NULL,
     FOREIGN KEY (item_id)
       REFERENCES items(id),
@@ -130,11 +159,11 @@ async function initItemAmountChanges(sql: postgres.Sql<any>): Promise<void> {
   await sql`
   CREATE TABLE IF NOT EXISTS item_amount_changes (
     id SERIAL PRIMARY KEY,
-    reason TEXT,
-    related_id INT,
     item_id INT NOT NULL,
     amount_before INT NOT NULL,
     amount_after INT NOT NULL,
+    reason TEXT,
+    related_id INT,
     creation_time TIMESTAMP NOT NULL,
     FOREIGN KEY (item_id)
       REFERENCES items(id)
@@ -149,9 +178,9 @@ async function initDonations(sql: postgres.Sql<any>): Promise<void> {
   await sql`
   CREATE TABLE IF NOT EXISTS donations (
     id SERIAL PRIMARY KEY,
-    notes TEXT NOT NULL,
     donator_id INT NOT NULL,
     operator_id INT NOT NULL,
+    notes TEXT NOT NULL,
     creation_time TIMESTAMP NOT NULL,
     FOREIGN KEY (donator_id)
       REFERENCES students(id),
@@ -170,12 +199,12 @@ async function initRental(sql: postgres.Sql<any>): Promise<void> {
     id SERIAL PRIMARY KEY,
     name VARCHAR(20) NOT NULL,
     phone_number VARCHAR(32) NOT NULL,
+    return_time TIMESTAMP,
     borrower_id INT NOT NULL,
-    operator_id INT NOT NULL,
     deadline TIMESTAMP NOT NULL,
     creation_time TIMESTAMP NOT NULL,
     renewal JSON,
-    return_time TIMESTAMP,
+    operator_id INT NOT NULL,
     FOREIGN KEY (borrower_id)
       REFERENCES students(id),
     FOREIGN KEY (operator_id)
