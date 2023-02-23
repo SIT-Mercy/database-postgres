@@ -3,6 +3,10 @@ export type Amount = number
 export type PrimaryKey = number
 export type Point = number
 
+export interface DbEntity {
+  saveChanges: () => Promise<void>
+}
+
 export enum StaffAuthority {
   transcationOp = "transaction",
   admin = "admin",
@@ -20,6 +24,9 @@ export interface Staff {
   studentKey: PrimaryKey
   authority: StaffAuthority
   creationTime: Date
+}
+
+export interface StaffEntity extends Staff, DbEntity {
   get student(): Promise<Student>
 }
 
@@ -34,6 +41,10 @@ export interface Student {
    * Null when the student not yet to provide it.
    */
   phoneNumber: string | null
+}
+
+export interface StudentEntity extends Student, DbEntity {
+  get student(): Promise<Student>
 }
 
 enum PointChangeReason {
@@ -51,6 +62,9 @@ export interface PointChangeRecord {
   afterChange: Point
   reason: PointChangeReason | null
   creationTime: Date
+}
+
+export interface PointChangeRecordEntity extends PointChangeRecord, DbEntity {
   get subject(): Promise<Student>
   get operator(): Promise<Staff>
 }
@@ -65,6 +79,9 @@ export interface TranscationRecord {
   finalPrice: Point
   note: string | null
   creationTime: Date
+}
+
+export interface TranscationRecordEntity extends TranscationRecord, DbEntity {
   get item(): Promise<Item>
   get customer(): Promise<Student>
   get operator(): Promise<Staff>
@@ -97,6 +114,9 @@ export interface ItemAmountChangeRecord {
   beforeChange: Amount
   afterChange: Amount
   creationTime: Date
+}
+
+export interface ItemAmountChangeRecordEntity extends ItemAmountChangeRecord, DbEntity {
   get item(): Promise<Item>
 }
 
@@ -106,6 +126,10 @@ export interface DonationRecord {
   operatorKey: PrimaryKey
   note: string
   creationTime: Date
+
+}
+
+export interface DonationRecordEntity extends DonationRecord, DbEntity {
   get donator(): Promise<Student>
   get operator(): Promise<Staff>
 }
@@ -120,6 +144,9 @@ export interface RentalRecord {
   deadline: Date
   startTime: Date
   returnTime: Date | null
+}
+
+export interface RentalRecordEntity extends RentalRecord, DbEntity {
   get borrower(): Promise<Student>
   get operator(): Promise<Staff>
   get item(): Promise<Item>
