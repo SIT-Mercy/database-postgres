@@ -1,10 +1,33 @@
 export type Integer = number
+export type Decimal = number
 export type Amount = number
 export type PrimaryKey = number
 export type Point = number
 
 export interface DbEntity {
   saveChanges: () => Promise<void>
+}
+export enum PoorLevel {
+  notPoor = 0,
+  poor = 1,
+  veryPoor = 2,
+}
+
+export interface Student {
+  key: PrimaryKey
+  studentID: string
+  name: string
+  poorLevel: PoorLevel
+  currentPoint: Point
+  creationTime: Date
+  /**
+   * Null when the student not yet to provide it.
+   */
+  phoneNumber: string | null
+}
+
+export interface StudentEntity extends Student, DbEntity {
+  get student(): Promise<Student>
 }
 
 export enum StaffAuthority {
@@ -27,23 +50,6 @@ export interface Staff {
 }
 
 export interface StaffEntity extends Staff, DbEntity {
-  get student(): Promise<Student>
-}
-
-export interface Student {
-  key: PrimaryKey
-  studentID: string
-  name: string
-  isPoorStudent: boolean
-  currentPoint: Point
-  creationTime: Date
-  /**
-   * Null when the student not yet to provide it.
-   */
-  phoneNumber: string | null
-}
-
-export interface StudentEntity extends Student, DbEntity {
   get student(): Promise<Student>
 }
 
@@ -75,9 +81,10 @@ export interface TranscationRecord {
   operatorKey: PrimaryKey
   itemKey: PrimaryKey
   amount: Integer
-  originalPrice: Point
-  finalPrice: Point
-  note: string | null
+  unitPrice: Point
+  priceFactor: Decimal
+  finalTotalPrice: Point
+  notes: string | null
   creationTime: Date
 }
 
@@ -91,18 +98,17 @@ export interface Item {
   key: PrimaryKey
   name: string
   description: string
-  price: Point
-  rent: Point
-  hasPoorDiscount: boolean
-  rentable: boolean
-  forSales: boolean
+  price: Point | null
+  rent: Point | null
+  poorPriceFactor: Decimal
   creationTime: Date
 }
 
 enum ItemAmountChangeReason {
   redeemed = "redeemed",
   rented = "rented",
-  missing = "missing"
+  missing = "missing",
+  ownUse = "ownUse",
 }
 
 export interface ItemAmountChangeRecord {
@@ -126,12 +132,16 @@ export interface DonationRecord {
   operatorKey: PrimaryKey
   note: string
   creationTime: Date
-
 }
 
 export interface DonationRecordEntity extends DonationRecord, DbEntity {
   get donator(): Promise<Student>
   get operator(): Promise<Staff>
+}
+
+interface RenewalRecord {
+  from: Date
+  to: Date
 }
 
 export interface RentalRecord {
@@ -142,7 +152,8 @@ export interface RentalRecord {
   name: string
   phoneNumber: string
   deadline: Date
-  startTime: Date
+  renewalRecords: RenewalRecord[]
+  creationTime: Date
   returnTime: Date | null
 }
 
