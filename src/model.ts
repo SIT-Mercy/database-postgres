@@ -63,7 +63,7 @@ export interface TranscationRecord {
   amount: Integer
   originalPrice: Point
   finalPrice: Point
-  note: String | null
+  note: string | null
   creationTime: Date
   get item(): Promise<Item>
   get customer(): Promise<Student>

@@ -1,4 +1,4 @@
-import postgres from 'postgres'
+import type postgres from "postgres"
 
 const tables = {
   staff: "staff",
@@ -11,7 +11,7 @@ const tables = {
   itemAmountChanges: "item_amount_changes",
 }
 
-export async function initDatabase(sql: postgres.Sql<{}>) {
+export async function initDatabase(sql: postgres.Sql<any>): Promise<void> {
   await initStudents(sql)
   await initStaff(sql)
   await initPointChanges(sql)
@@ -27,7 +27,7 @@ export async function initDatabase(sql: postgres.Sql<{}>) {
  * `student id`: e.g.: 2210123456
  * table: {@link tables.students}
  */
-async function initStudents(sql: postgres.Sql<{}>) {
+async function initStudents(sql: postgres.Sql<any>): Promise<void> {
   await sql`
   CREATE TABLE IF NOT EXISTS students (
     id SERIAL PRIMARY KEY,
@@ -43,7 +43,7 @@ async function initStudents(sql: postgres.Sql<{}>) {
 /**
  * table: {@link tables.staff}
  */
-async function initStaff(sql: postgres.Sql<{}>) {
+async function initStaff(sql: postgres.Sql<any>): Promise<void> {
   await sql`
   CREATE TABLE IF NOT EXISTS staff (
     id SERIAL PRIMARY KEY,
@@ -60,7 +60,7 @@ async function initStaff(sql: postgres.Sql<{}>) {
 /**
  * table: {@link tables.pointChanges}
  */
-async function initPointChanges(sql: postgres.Sql<{}>) {
+async function initPointChanges(sql: postgres.Sql<any>): Promise<void> {
   await sql`
   CREATE TABLE IF NOT EXISTS point_changes (
     id SERIAL PRIMARY KEY,
@@ -81,7 +81,7 @@ async function initPointChanges(sql: postgres.Sql<{}>) {
 /**
  * table: {@link tables.items}
  */
-async function initItems(sql: postgres.Sql<{}>) {
+async function initItems(sql: postgres.Sql<any>): Promise<void> {
   await sql`
   CREATE TABLE IF NOT EXISTS items (
     id SERIAL PRIMARY KEY,
@@ -100,7 +100,7 @@ async function initItems(sql: postgres.Sql<{}>) {
 /**
  * table: {@link tables.transactions}
  */
-async function initTransactions(sql: postgres.Sql<{}>) {
+async function initTransactions(sql: postgres.Sql<any>): Promise<void> {
   await sql`
   CREATE TABLE IF NOT EXISTS donations (
     id SERIAL PRIMARY KEY,
@@ -121,10 +121,11 @@ async function initTransactions(sql: postgres.Sql<{}>) {
   );
   `
 }
+
 /**
  * table: {@link tables.itemAmountChanges}
  */
-async function initItemAmountChanges(sql: postgres.Sql<{}>) {
+async function initItemAmountChanges(sql: postgres.Sql<any>): Promise<void> {
   await sql`
   CREATE TABLE IF NOT EXISTS item_amount_changes (
     id SERIAL PRIMARY KEY,
@@ -143,7 +144,7 @@ async function initItemAmountChanges(sql: postgres.Sql<{}>) {
 /**
  * table: {@link tables.donations}
  */
-async function initDonations(sql: postgres.Sql<{}>) {
+async function initDonations(sql: postgres.Sql<any>): Promise<void> {
   await sql`
   CREATE TABLE IF NOT EXISTS donations (
     id SERIAL PRIMARY KEY,
@@ -162,7 +163,7 @@ async function initDonations(sql: postgres.Sql<{}>) {
 /**
  * table: {@link tables.rental}
  */
-async function initRental(sql: postgres.Sql<{}>) {
+async function initRental(sql: postgres.Sql<any>): Promise<void> {
   await sql`
   CREATE TABLE IF NOT EXISTS rental (
     id SERIAL PRIMARY KEY,
