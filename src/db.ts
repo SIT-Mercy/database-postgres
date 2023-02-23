@@ -1,17 +1,5 @@
 import postgres from 'postgres'
 
-export function connectToPostgres(options: postgres.Options<{}>): postgres.Sql<{}> {
-  return postgres(options)
-}
-
-export const sql = postgres({
-  host: '',            // Postgres ip address[s] or domain name[s]
-  port: 5432,          // Postgres server port[s]
-  database: '',            // Name of database to connect to
-  username: '',            // Username of database user
-  password: '',            // Password of database user
-})
-
 const tables = {
   staff: "staff",
   students: "students",
@@ -23,41 +11,25 @@ const tables = {
   itemAmountChanges: "item_amount_changes",
 }
 
-export function initDatabase(sql: postgres.Sql<{}>) {
-  initStaff(sql)
-  initStudents(sql)
-  initPointChanges(sql)
-  initTransactions(sql)
-  initItems(sql)
-  initDonations(sql)
-  initItemAmountChanges(sql)
-  initRental(sql)
-}
-/**
- * table: {@link tables.staff}
- */
-function initStaff(sql: postgres.Sql<{}>) {
-  sql`
-  CREATE TABLE [IF NOT EXISTS] staff (
-    id SERIAL PRIMARY KEY,
-    student_id INT NOT NULL,
-    password VARCHAR(20) NOT NULL,
-    creation_time TIMESTAMP NOT NULL,
-    type VARCHAR NOT NULL,
-    last_login TIMESTAMP,
-    FOREIGN KEY (subject_id)
-      REFERENCES students(id),
-  );
-  `
+export async function initDatabase(sql: postgres.Sql<{}>) {
+  await initStudents(sql)
+  await initStaff(sql)
+  await initPointChanges(sql)
+  await initItems(sql)
+  await initTransactions(sql)
+  await initDonations(sql)
+  await initItemAmountChanges(sql)
+  await initRental(sql)
+  sql`COMMIT;`
 }
 
 /**
  * `student id`: e.g.: 2210123456
  * table: {@link tables.students}
  */
-function initStudents(sql: postgres.Sql<{}>) {
-  sql`
-  CREATE TABLE [IF NOT EXISTS] students (
+async function initStudents(sql: postgres.Sql<{}>) {
+  await sql`
+  CREATE TABLE IF NOT EXISTS students (
     id SERIAL PRIMARY KEY,
     student_id VARCHAR(20) UNIQUE NOT NULL,
     name VARCHAR(20) NOT NULL,
@@ -69,11 +41,28 @@ function initStudents(sql: postgres.Sql<{}>) {
   `
 }
 /**
+ * table: {@link tables.staff}
+ */
+async function initStaff(sql: postgres.Sql<{}>) {
+  await sql`
+  CREATE TABLE IF NOT EXISTS staff (
+    id SERIAL PRIMARY KEY,
+    student_id INT NOT NULL,
+    password VARCHAR(20) NOT NULL,
+    creation_time TIMESTAMP NOT NULL,
+    type VARCHAR NOT NULL,
+    last_login TIMESTAMP,
+    FOREIGN KEY (student_id)
+      REFERENCES students(id)
+  );
+  `
+}
+/**
  * table: {@link tables.pointChanges}
  */
-function initPointChanges(sql: postgres.Sql<{}>) {
-  sql`
-  CREATE TABLE [IF NOT EXISTS] point_changes (
+async function initPointChanges(sql: postgres.Sql<{}>) {
+  await sql`
+  CREATE TABLE IF NOT EXISTS point_changes (
     id SERIAL PRIMARY KEY,
     subject_id INT NOT NULL,
     operator_id INT NOT NULL,
@@ -92,9 +81,9 @@ function initPointChanges(sql: postgres.Sql<{}>) {
 /**
  * table: {@link tables.items}
  */
-function initItems(sql: postgres.Sql<{}>) {
-  sql`
-  CREATE TABLE [IF NOT EXISTS] items (
+async function initItems(sql: postgres.Sql<{}>) {
+  await sql`
+  CREATE TABLE IF NOT EXISTS items (
     id SERIAL PRIMARY KEY,
     name VARCHAR(32) NOT NULL,
     description TEXT NOT NULL,
@@ -111,9 +100,9 @@ function initItems(sql: postgres.Sql<{}>) {
 /**
  * table: {@link tables.transactions}
  */
-function initTransactions(sql: postgres.Sql<{}>) {
-  sql`
-  CREATE TABLE [IF NOT EXISTS] donations (
+async function initTransactions(sql: postgres.Sql<{}>) {
+  await sql`
+  CREATE TABLE IF NOT EXISTS donations (
     id SERIAL PRIMARY KEY,
     note TEXT,
     item_id INT NOT NULL,
@@ -125,20 +114,19 @@ function initTransactions(sql: postgres.Sql<{}>) {
     creation_time TIMESTAMP NOT NULL,
     FOREIGN KEY (item_id)
       REFERENCES items(id),
-    creation_time TIMESTAMP NOT NULL,
     FOREIGN KEY (customer_id)
       REFERENCES students(id),
     FOREIGN KEY (operator_id)
-      REFERENCES staff(id),
+      REFERENCES staff(id)
   );
   `
 }
 /**
  * table: {@link tables.itemAmountChanges}
  */
-function initItemAmountChanges(sql: postgres.Sql<{}>) {
-  sql`
-  CREATE TABLE [IF NOT EXISTS] item_amount_changes (
+async function initItemAmountChanges(sql: postgres.Sql<{}>) {
+  await sql`
+  CREATE TABLE IF NOT EXISTS item_amount_changes (
     id SERIAL PRIMARY KEY,
     reason TEXT,
     related_id INT,
@@ -147,7 +135,7 @@ function initItemAmountChanges(sql: postgres.Sql<{}>) {
     amount_after INT NOT NULL,
     creation_time TIMESTAMP NOT NULL,
     FOREIGN KEY (item_id)
-      REFERENCES items(id),
+      REFERENCES items(id)
   );
   `
 }
@@ -155,9 +143,9 @@ function initItemAmountChanges(sql: postgres.Sql<{}>) {
 /**
  * table: {@link tables.donations}
  */
-function initDonations(sql: postgres.Sql<{}>) {
-  sql`
-  CREATE TABLE [IF NOT EXISTS] donations (
+async function initDonations(sql: postgres.Sql<{}>) {
+  await sql`
+  CREATE TABLE IF NOT EXISTS donations (
     id SERIAL PRIMARY KEY,
     note TEXT NOT NULL,
     donator_id INT NOT NULL,
@@ -166,7 +154,7 @@ function initDonations(sql: postgres.Sql<{}>) {
     FOREIGN KEY (donator_id)
       REFERENCES students(id),
     FOREIGN KEY (operator_id)
-      REFERENCES staff(id),
+      REFERENCES staff(id)
   );
   `
 }
@@ -174,9 +162,9 @@ function initDonations(sql: postgres.Sql<{}>) {
 /**
  * table: {@link tables.rental}
  */
-function initRental(sql: postgres.Sql<{}>) {
-  sql`
-  CREATE TABLE [IF NOT EXISTS] rental (
+async function initRental(sql: postgres.Sql<{}>) {
+  await sql`
+  CREATE TABLE IF NOT EXISTS rental (
     id SERIAL PRIMARY KEY,
     name VARCHAR(20) NOT NULL,
     phone_number VARCHAR(32) NOT NULL,
@@ -188,7 +176,7 @@ function initRental(sql: postgres.Sql<{}>) {
     FOREIGN KEY (borrower_id)
       REFERENCES students(id),
     FOREIGN KEY (operator_id)
-      REFERENCES staff(id),
+      REFERENCES staff(id)
   );
   `
 }
