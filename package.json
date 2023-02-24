@@ -9,7 +9,7 @@
   "exports": {
     ".": "./dist/index.js",
     "./db": "./dist/db.js",
-    "./modal": "./dist/modal.js"
+    "./model": "./dist/model.js"
   },
   "files": [
     "src/**/*.ts",
