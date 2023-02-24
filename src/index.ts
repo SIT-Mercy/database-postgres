@@ -32,6 +32,24 @@ async function tryAddTestStudent(): Promise<void> {
   })
   console.log(id)
 }
+async function tryQueryStudent(): Promise<void> {
+  const student = await db.queryStudentByID(sql, "2210XY0AAA")
+  console.log(student)
+}
+async function tryAlterStudent(): Promise<void> {
+  await db.alterStudent(sql, 1, {
+    studentID: "2210XY0AAA",
+    name: "Tom",
+    college: "Computer",
+    poorLevel: 1,
+    currentPoint: 100,
+    creationTime: new Date(),
+    phoneNumber: "123456789"
+  })
+  await tryQueryStudent()
+}
 await tryInitDatabase()
-await tryAddTestStudent()
+// await tryAddTestStudent()
+await tryQueryStudent()
+await tryAlterStudent()
 await sql.end()

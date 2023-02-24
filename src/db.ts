@@ -43,7 +43,8 @@ async function initStudents(sql: postgres.Sql<any>): Promise<void> {
   `
 }
 
-export async function addStudent(sql: postgres.Sql<any>,
+export async function addStudent(
+  sql: postgres.Sql<any>,
   student: model.Student
 ): Promise<model.PrimaryKey> {
   const id = sql`
@@ -68,6 +69,46 @@ export async function addStudent(sql: postgres.Sql<any>,
   RETURNING id;
   `
   return id[0].id
+}
+
+export async function queryStudentByID(
+  sql: postgres.Sql<any>,
+  studentID: string,
+): Promise<model.Student | null> {
+  const students = await sql`
+  SELECT * FROM students
+  WHERE student_id = ${studentID};
+  `
+  if (students.length === 0) return null
+  const s = students[0]
+  return {
+    studentID: s.student_id,
+    name: s.name,
+    college: s.college,
+    poorLevel: s.poor_level,
+    currentPoint: s.point,
+    creationTime: s.creation_time,
+    phoneNumber: s.phoneNumber,
+  }
+}
+
+export async function alterStudent(
+  sql: postgres.Sql<any>,
+  key: model.PrimaryKey,
+  student: model.Student,
+): Promise<void> {
+  await sql`
+  UPDATE students
+  SET
+    student_id = ${student.studentID},
+    name = ${student.name},
+    college = ${student.college},
+    point = ${student.currentPoint},
+    phone_number = ${student.phoneNumber},
+    poor_level = ${student.poorLevel},
+    creation_time = ${student.creationTime}
+  WHERE id = ${key};
+  `
 }
 
 /**
