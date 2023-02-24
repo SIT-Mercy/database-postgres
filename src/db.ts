@@ -68,6 +68,7 @@ export async function addStudent(
   )
   RETURNING id;
   `
+  console.log(id)
   return id[0].id
 }
 
