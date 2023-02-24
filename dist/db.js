@@ -66,6 +66,7 @@ export async function queryStudentByID(sql, studentID) {
         return null;
     const s = students[0];
     return {
+        key: s.key,
         studentID: s.student_id,
         name: s.name,
         college: s.college,
@@ -73,6 +74,9 @@ export async function queryStudentByID(sql, studentID) {
         currentPoint: s.point,
         creationTime: s.creation_time,
         phoneNumber: s.phoneNumber,
+        saveChanges: async function () {
+            await alterStudent(sql, s.key, this);
+        }
     };
 }
 export async function alterStudent(sql, key, student) {

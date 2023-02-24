@@ -74,7 +74,7 @@ export async function addStudent(
 export async function queryStudentByID(
   sql: postgres.Sql<any>,
   studentID: string,
-): Promise<model.Student | null> {
+): Promise<model.StudentEntity | null> {
   const students = await sql`
   SELECT * FROM students
   WHERE student_id = ${studentID};
@@ -82,6 +82,7 @@ export async function queryStudentByID(
   if (students.length === 0) return null
   const s = students[0]
   return {
+    key: s.key,
     studentID: s.student_id,
     name: s.name,
     college: s.college,
@@ -89,6 +90,9 @@ export async function queryStudentByID(
     currentPoint: s.point,
     creationTime: s.creation_time,
     phoneNumber: s.phoneNumber,
+    saveChanges: async function (): Promise<void> {
+      await alterStudent(sql, s.key, this)
+    }
   }
 }
 
