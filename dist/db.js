@@ -55,8 +55,7 @@ export async function addStudent(sql, student) {
   )
   RETURNING id;
   `;
-    console.log(id);
-    return id[0].id;
+    return id;
 }
 export async function queryStudentByID(sql, studentID) {
     const students = await sql `

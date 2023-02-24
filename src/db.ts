@@ -47,7 +47,7 @@ export async function addStudent(
   sql: postgres.Sql<any>,
   student: model.Student
 ): Promise<model.PrimaryKey> {
-  const id = sql`
+  const id: any = sql`
   INSERT INTO students (
     student_id,
     name,
@@ -68,8 +68,7 @@ export async function addStudent(
   )
   RETURNING id;
   `
-  console.log(id)
-  return id[0].id
+  return id
 }
 
 export async function queryStudentByID(
