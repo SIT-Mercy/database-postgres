@@ -6,6 +6,11 @@
   "typings": "src/index.ts",
   "module": "src/index.ts",
   "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./db": "./dist/db.js",
+    "./modal": "./dist/modal.js"
+  },
   "files": [
     "src/**/*.ts",
     "dist/**/*.js",
