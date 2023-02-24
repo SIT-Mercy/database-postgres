@@ -55,6 +55,7 @@ export async function addStudent(sql, student) {
   )
   RETURNING id;
   `;
+    console.log(id);
     return id[0].id;
 }
 export async function queryStudentByID(sql, studentID) {
