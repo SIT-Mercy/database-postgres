@@ -7,8 +7,14 @@
   "module": "src/index.ts",
   "type": "module",
   "exports": {
-    "./db": "./dist/db.js",
-    "./db.js": "./dist/db.js"
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.js"
+    },
+    "./db": {
+      "require": "./dist/db.js",
+      "import": "./dist/db.js"
+    }
   },
   "files": [
     "src/**/*.ts",
