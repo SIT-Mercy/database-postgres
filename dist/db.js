@@ -74,7 +74,7 @@ export async function queryStudentByID(sql, studentID) {
         currentPoint: s.point,
         creationTime: s.creation_time,
         phoneNumber: s.phoneNumber,
-        saveChanges: async function () {
+        async saveChanges() {
             await alterStudent(sql, s.key, this);
         }
     };
