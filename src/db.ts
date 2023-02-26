@@ -90,7 +90,7 @@ export async function queryStudentByID(
     currentPoint: s.point,
     creationTime: s.creation_time,
     phoneNumber: s.phoneNumber,
-    saveChanges: async function (): Promise<void> {
+    async saveChanges(): Promise<void> {
       await alterStudent(sql, s.key, this)
     }
   }
